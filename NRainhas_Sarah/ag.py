@@ -35,15 +35,14 @@ class AlgoritmoGenetico:
             self.__population.extend(elite)
             self.print_result(gen)
 
-            # Verifica se ficou muitas gerações sem melhoria e encerra AG
-            # if self.best_individual is not None and self.best_individual.get_evaluate() >= self.best_individual.get_evaluate():
+           # Verifica condição de parada
+            # best_current_individual = min(
+            #     self.__population, key=lambda individual: individual.get_evaluate())
+            # if self.best_individual is not None and best_current_individual.get_evaluate() >= self.best_individual.get_evaluate():
             #     self.generations_without_improvement += 1
             # else:
+            #     self.best_individual = best_current_individual
             #     self.generations_without_improvement = 0
-            # if self.generations_without_improvement >= max_generations_without_improvement:
-            #     print("Parando o algoritmo após {} gerações sem melhoria".format(
-            #         max_generations_without_improvement))
-            #     break
 
     def get_children(self):
         parents = self.__population.copy()

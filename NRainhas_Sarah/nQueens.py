@@ -65,8 +65,15 @@ class nQueens:
 
         return chromosome
 
+    def get_evaluate(self):
+        if not self.evaluated:
+            self.fitness = self.evaluateFitness()
+            self.evaluated = True
+        return self.fitness
+
+    # define fitness
     # eval/colisao = numero de rainhas se atacando
-    def evaluateColisions(self):
+    def evaluateFitness(self):
         eval = 0
         for i in range(self.nQueens):
             # verifica a cada par i+1
@@ -80,12 +87,6 @@ class nQueens:
 
                     eval += 1
         return eval
-
-    def get_evaluate(self):
-        if not self.evaluated:
-            self.fitness = self.evaluateColisions()
-            self.evaluated = True
-        return self.fitness
 
     # confere se o cromossomo possui todos os valores possíveis (0 a nQueens - 1) sem duplicacao
     def checkChromosome(self, chromosome: list):
