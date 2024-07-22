@@ -16,8 +16,8 @@ class nQueens:
         self.crossover_second_part(individual.chromosome, first_child)
         self.crossover_second_part(self.chromosome, second_child)
 
-        self.check(first_child)
-        self.check(second_child)
+        self.checkChromosome(first_child)
+        self.checkChromosome(second_child)
 
         return [nQueens(first_child, self.nQueens), nQueens(second_child, self.nQueens)]
 
@@ -28,7 +28,7 @@ class nQueens:
             else:
                 child.append(-1)
 
-# seleciona aleatoriamente dois pontos no cromossomo e troca seus valores
+    # seleciona aleatoriamente dois pontos no cromossomo e troca seus valores
     def mutate(self, rate=0.05):
         mutation = self.chromosome.copy()
         aux_mutation = False
@@ -65,7 +65,8 @@ class nQueens:
 
         return chromosome
 
-    def evaluate(self):
+    # eval/colisao = numero de rainhas se atacando
+    def evaluateColisions(self):
         eval = 0
         for i in range(self.nQueens):
             # verifica a cada par i+1
@@ -82,12 +83,12 @@ class nQueens:
 
     def get_evaluate(self):
         if not self.evaluated:
-            self.fitness = self.evaluate()
+            self.fitness = self.evaluateColisions()
             self.evaluated = True
         return self.fitness
 
     # confere se o cromossomo possui todos os valores possíveis (0 a nQueens - 1) sem duplicacao
-    def check(self, chromosome: list):
+    def checkChromosome(self, chromosome: list):
         check = []
 
         for i in range(len(chromosome)):
