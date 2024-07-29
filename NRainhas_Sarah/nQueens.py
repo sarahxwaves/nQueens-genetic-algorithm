@@ -29,7 +29,7 @@ class nQueens:
                 child.append(-1)
 
     # seleciona aleatoriamente dois pontos no cromossomo e troca seus valores
-    def mutate(self, rate=0.05):
+    def mutate(self, rate=0.2):
         mutation = self.chromosome.copy()
         aux_mutation = False
 

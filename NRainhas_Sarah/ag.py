@@ -11,6 +11,7 @@ class AlgoritmoGenetico:
         self.best_individual = None
         # contador de gerações sem melhoria
         self.generations_without_improvement = 0
+        self.best_result_find = False
 
     def execute(self, num_geracoes: int, num_individuos: int, elitism: int, num_queens: int):
 
@@ -27,13 +28,20 @@ class AlgoritmoGenetico:
             aux_population.extend(self.get_mutations())
 
             self.__population = aux_population
-            # elite = sorted(self.__population, key=lambda individual: individual.chromosome)[:elitism]
+            # elite = sorted(self.__population, key=lambda individual: individual.chromosome)[
+            #     :elitism]
             elite = sorted(self.__population, key=lambda individual: individual.get_evaluate())[
                 :elitism]
 
             self.selection(num_individuos - elitism)
             self.__population.extend(elite)
             self.print_result(gen)
+            # Verifica se uma solução perfeita foi encontrada
+            if self.best_individual.fitness == 0:
+                self.best_result_find = True
+                print(
+                    f'Solução perfeita: {self.best_generation} Individuo: {self.best_individual.chromosome} Colisão: {self.best_individual.fitness}')
+                break
 
            # Verifica condição de parada
             # best_current_individual = min(
@@ -53,6 +61,11 @@ class AlgoritmoGenetico:
             p2 = parents.pop(random.randint(0, len(parents)-1))
             child = p1.crossover(p2)
             children.extend(child)
+            # força mutação se o filho for igual a qualquer um dos pais
+        while any(s.chromosome == p1.chromosome or s.chromosome == p2.chromosome for s in child):
+            child = [s.mutate() for s in child]
+
+        children.extend(child)
 
         return children
 
@@ -64,13 +77,39 @@ class AlgoritmoGenetico:
 
         return mutations
 
-    # selecao aleatoria
+    # calcula fitness total
+    def evaluation(self):
+        total = 0
+        for individual in self.__population:
+            total += 1/(individual.get_evaluate()+0.1)
+        return total
+
+    # selecao roleta
     def selection(self, numIndividuals: int):
         selected_genes = []
+        total = self.evaluation()
+
         for i in range(numIndividuals):
-            selected = random.choice(self.__population)
-            selected_genes.append(selected)
+            rand = random.uniform(0, total)
+            value = self.wheel(rand)
+            selected_genes.append(value)
+
         self.__population = selected_genes
+
+    # roleta
+    def wheel(self, sortedIndividual):
+        selected = None
+        sum = 0
+
+        for individual in self.__population:
+            # soma fitness individuos ate que seja maior ou igual ao individuo sorteado
+            sum += 1/(individual.get_evaluate()+0.1)
+            # chegamos no ponto da roleta onde está o individuo?
+            if sum >= sortedIndividual:
+                selected = individual
+                break
+
+        return selected
 
     def print_result(self, gen: int):
         best = self.__population[0]
@@ -83,10 +122,10 @@ class AlgoritmoGenetico:
         if self.best_individual is None or best.get_evaluate() < self.best_individual.get_evaluate():
             self.best_generation = gen
             self.best_individual = best
-
         print(
             f'Geração: {gen} Individuo: {best.chromosome} Colisão: {best.fitness}')
 
     def print_best(self):
-        print(
-            f'Melhor Geração: {self.best_generation} Individuo: {self.best_individual.chromosome} Colisão: {self.best_individual.fitness}')
+        if not self.best_result_find:
+            print(
+                f'Melhor Geração: {self.best_generation} Individuo: {self.best_individual.chromosome} Colisão: {self.best_individual.fitness}')

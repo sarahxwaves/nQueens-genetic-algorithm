@@ -1,9 +1,9 @@
 from ag import AlgoritmoGenetico
 
 ag = AlgoritmoGenetico()
-numGeracoes = 50
+numGeracoes = 200
 numIndividuos = 1000
-numQueens = 20
+numQueens = 12
 numElitismo = 8
 
 ag.execute(numGeracoes,
